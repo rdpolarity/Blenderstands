@@ -11,19 +11,19 @@ import org.bukkit.plugin.java.annotation.plugin.author.Author;
 @Author("RDPolarity")
 public final class Blenderstands extends JavaPlugin {
 
-    public BlenderstandManager blenderstandsManager = new BlenderstandManager();
-
     @Override
     public void onEnable() {
         // Plugin startup logic
         BukkitCommandManager manager = new BukkitCommandManager(this);
+
+        getServer().getPluginManager().registerEvents(new BlenderEgg(), this);
         manager.registerCommand(new Commands());
         this.saveDefaultConfig();
     }
 
     @Override
     public void onDisable() {
-        blenderstandsManager.Clear();
         // Plugin shutdown logic
+        BlenderstandManager.GetInstance().Clear();
     }
 }

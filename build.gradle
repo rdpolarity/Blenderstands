@@ -14,6 +14,7 @@ repositories {
     mavenCentral()
     maven { url = "https://repo.aikar.co/content/groups/aikar/" }
     maven { url = "https://maven.enginehub.org/repo/" }
+    maven { url = "https://repo.dmulloy2.net/repository/public/" }
     mavenLocal()
 }
 
@@ -24,16 +25,18 @@ compileJava {
 }
 
 dependencies {
-    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+    compileOnly spigotAll("1.16.5")
     compileOnly 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
     compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.5'
     compile "co.aikar:acf-bukkit:0.5.0-SNAPSHOT"
+    compile "com.comphenix.protocol:ProtocolLib:4.6.0"
     annotationProcessor 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
 }
 
 shadowJar {
     relocate 'co.aikar.commands', 'rdpolarity.blenderstands.acf'
     relocate 'co.aikar.locales', 'rdpolarity.blenderstands.locales'
+    relocate 'com.comphenix.protocol', 'rdpolarity.blenderstands'
     destinationDirectory.set(file("C:\\Users\\rdpol\\IdeaProjects\\Servers\\servers\\1.16.5\\plugins"))
 }
 

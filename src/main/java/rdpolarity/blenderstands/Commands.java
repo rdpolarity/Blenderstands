@@ -16,8 +16,6 @@ import org.bukkit.plugin.java.annotation.command.Command;
 )
 public class Commands extends BaseCommand {
 
-    Blenderstands plugin = Blenderstands.getPlugin(Blenderstands.class);
-
     @Default
     @Subcommand("spawn")
     public void onSpawn(Player player) {
@@ -37,7 +35,7 @@ public class Commands extends BaseCommand {
     public void onSpawnAnimation(Player player) {
         Blenderstand bs = new Blenderstand("untitled");
         bs.Spawn(player.getLocation());
-        bs.Run();
+        bs.RunAnimation();
     }
 
     @Subcommand("spawnat")
@@ -47,9 +45,13 @@ public class Commands extends BaseCommand {
         bs.SetFrame(frame);
     }
 
+    @Subcommand("give")
+    public void onGive(Player player, String file) {
+        BlenderEgg.Give(player, file);
+    }
 
     @Subcommand("clear")
     public void onClear() {
-        plugin.blenderstandsManager.Clear();
+        BlenderstandManager.GetInstance().Clear();
     }
 }
