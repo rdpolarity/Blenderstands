@@ -14,7 +14,7 @@ import org.bukkit.plugin.java.annotation.command.Command;
         aliases = {"blenderstands", "bs"},
         usage = "/<command>"
 )
-public class Commands extends BaseCommand {
+public final class Commands extends BaseCommand {
 
     @Default
     @Subcommand("spawn")
@@ -53,5 +53,10 @@ public class Commands extends BaseCommand {
     @Subcommand("clear")
     public void onClear() {
         BlenderstandManager.GetInstance().Clear();
+    }
+
+    @Subcommand("equip")
+    public void onEquip(Player player, String file) {
+        Blenderstand bs = new Blenderstand(file);
     }
 }

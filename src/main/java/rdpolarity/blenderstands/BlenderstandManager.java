@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * This class keeps track of all active armourstand entities
  */
-public class BlenderstandManager extends Singleton {
+public final class BlenderstandManager extends Singleton {
     private static BlenderstandManager instance;
     private BlenderstandManager() {}
 
@@ -24,6 +24,11 @@ public class BlenderstandManager extends Singleton {
     public void Clear() {
         blenderstands.forEach(Blenderstand::Kill);
         blenderstands.clear();
+    }
+
+    // TODO implement save feature
+    public void Save() {
+
     }
 
     public static synchronized BlenderstandManager GetInstance() {
