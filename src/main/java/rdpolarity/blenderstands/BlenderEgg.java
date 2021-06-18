@@ -1,5 +1,6 @@
 package rdpolarity.blenderstands;
 
+import com.google.inject.Injector;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,13 +13,19 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BlenderEgg implements Listener {
 
+    @Inject Blenderstands plugin;
+    @Inject BlenderstandManager blenderstandManager;
+    @Inject
+    Injector injector;
+
     public static void Give(Player player, String fileName) {
-        ItemStack egg = new ItemStack(Material.BLAZE_SPAWN_EGG);
+        ItemStack egg = new ItemStack(Material.EGG);
         // Item Meta
         ItemMeta stickMeta = egg.getItemMeta();
         stickMeta.setDisplayName(fileName);
@@ -50,10 +57,10 @@ public class BlenderEgg implements Listener {
         NBTTagCompound tag = itemNMS.getTag() != null ? itemNMS.getTag() : null;
         if (tag != null) {
             String file = tag.getString("BlenderstandsFile");
-            Blenderstand stand = new Blenderstand(file);
-            stand.setDestroyable(true);
             loc.add(0.5, 1, 0.5);
-            stand.Spawn(loc);
+            Blenderstand bs = injector.getInstance(Blenderstand.class);
+            bs.FromFile(file);
+            bs.Spawn(loc);
         }
     }
 
@@ -68,4 +75,5 @@ public class BlenderEgg implements Listener {
             }
         }
     }
+
 }

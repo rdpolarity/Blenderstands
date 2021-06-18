@@ -1,15 +1,27 @@
 package rdpolarity.blenderstands;
 
-import rdpolarity.blenderstands.patterns.Singleton;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.ArrayList;
+import java.util.Optional;
 
 /**
  * This class keeps track of all active armourstand entities
  */
-public final class BlenderstandManager extends Singleton {
-    private static BlenderstandManager instance;
-    private BlenderstandManager() {}
+@Singleton
+public class BlenderstandManager implements Listener {
+    @Inject
+    public BlenderstandManager() {
+        Bukkit.broadcastMessage(this.toString());
+    }
 
     private final ArrayList<Blenderstand> blenderstands = new ArrayList<>();
 
@@ -21,20 +33,29 @@ public final class BlenderstandManager extends Singleton {
         blenderstands.remove(blenderstand);
     }
 
+    @EventHandler
+    private void OnHit(EntityDamageByEntityEvent event) {
+        if (event.getEntityType() == EntityType.ARMOR_STAND) {
+            ArmorStand armourstand = (ArmorStand) event.getEntity();
+            if (event.getDamager().getType() == EntityType.PLAYER) {
+                Player player = (((Player) event.getDamager()).getPlayer());
+                Optional<Blenderstand> blenderstand = FindArmourstandEntity(armourstand);
+                blenderstand.ifPresent(Blenderstand::Hit);
+            }
+        }
+    }
+
+    private Optional<Blenderstand> FindArmourstandEntity(ArmorStand armourstand) {
+        return blenderstands.stream().filter(blenderstand ->
+                blenderstand.armourstandEntities.stream().anyMatch(group ->
+                        armourstand.equals(group.entity)
+                )
+        ).findFirst();
+    }
+
     public void Clear() {
+        Bukkit.broadcastMessage("Cleared");
         blenderstands.forEach(Blenderstand::Kill);
         blenderstands.clear();
-    }
-
-    // TODO implement save feature
-    public void Save() {
-
-    }
-
-    public static synchronized BlenderstandManager GetInstance() {
-        if (instance == null) {
-            instance = new BlenderstandManager();
-        }
-        return instance;
     }
 }

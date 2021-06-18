@@ -3,9 +3,14 @@ package rdpolarity.blenderstands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Dependency;
 import co.aikar.commands.annotation.Subcommand;
+import com.google.inject.Injector;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.annotation.command.Command;
+
+import javax.inject.Inject;
 
 @CommandAlias("blenderstands|bs")
 @Command(
@@ -16,31 +21,40 @@ import org.bukkit.plugin.java.annotation.command.Command;
 )
 public final class Commands extends BaseCommand {
 
+    @Inject private Blenderstands plugin;
+    @Inject private BlenderstandManager blenderstandManager;
+    @Inject
+    Injector injector;
+
     @Default
     @Subcommand("spawn")
     public void onSpawn(Player player) {
-        Blenderstand bs = new Blenderstand("untitled");
+        Blenderstand bs = injector.getInstance(Blenderstand.class);
+        bs.FromFile("untitled");
         bs.Spawn(player.getLocation());
     }
 
     @Default
     @Subcommand("spawn")
     public void onSpawn(Player player, String name) {
-        Blenderstand bs = new Blenderstand(name);
+        Blenderstand bs = injector.getInstance(Blenderstand.class);
+        bs.FromFile(name);
         bs.Spawn(player.getLocation());
     }
 
     @Default
     @Subcommand("spawnanimation")
     public void onSpawnAnimation(Player player) {
-        Blenderstand bs = new Blenderstand("untitled");
+        Blenderstand bs = injector.getInstance(Blenderstand.class);
+        bs.FromFile("untitled");
         bs.Spawn(player.getLocation());
         bs.RunAnimation();
     }
 
     @Subcommand("spawnat")
     public void onSpawn(Player player, int frame) {
-        Blenderstand bs = new Blenderstand("untitled");
+        Blenderstand bs = injector.getInstance(Blenderstand.class);
+        bs.FromFile("untitled");
         bs.Spawn(player.getLocation());
         bs.SetFrame(frame);
     }
@@ -52,11 +66,17 @@ public final class Commands extends BaseCommand {
 
     @Subcommand("clear")
     public void onClear() {
-        BlenderstandManager.GetInstance().Clear();
+        blenderstandManager.Clear();
     }
 
     @Subcommand("equip")
     public void onEquip(Player player, String file) {
-        Blenderstand bs = new Blenderstand(file);
+        Blenderstand bs = injector.getInstance(Blenderstand.class);
+        bs.FromFile(file);
+    }
+
+    @Subcommand("test")
+    public void onTest(Player player) {
+        Bukkit.broadcastMessage(plugin.toString());
     }
 }

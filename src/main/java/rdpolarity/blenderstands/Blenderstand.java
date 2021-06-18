@@ -1,6 +1,8 @@
 package rdpolarity.blenderstands;
 
+import co.aikar.commands.annotation.Dependency;
 import com.google.gson.Gson;
+import com.google.inject.Injector;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -9,39 +11,42 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.omg.CORBA.Object;
 import rdpolarity.blenderstands.data.ArmourstandObject;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Blenderstand implements Listener {
+public class Blenderstand {
+
+    @Inject Injector injector;
+    @Inject BlenderstandManager blenderstandManager;
 
     public ArmourstandObject[] armourstands; // TODO: Encapsulate
     public ArrayList<ArmourstandEntity> armourstandEntities = new ArrayList<>(); // TODO: Encapsulate
     private int currentFrame = 0;
-
     private boolean destroyable = false;
 
     public boolean isDestroyable() {
         return destroyable;
     }
-
     public void setDestroyable(boolean destroyable) {
         this.destroyable = destroyable;
     }
 
     /**
      * Initialises Blenderstand Object
-     *
-     * @param data file name of JSON
      */
-    public Blenderstand(String data) {
-        armourstands = GetObjects(data);
-        Blenderstands manager = Blenderstands.getPlugin(Blenderstands.class);
-        manager.getServer().getPluginManager().registerEvents(this, manager);
-        BlenderstandManager.GetInstance().Add(this);
+    @Inject
+    public Blenderstand() {
+        blenderstandManager.Add(this);
+    }
+
+    public void FromFile(String name) {
+        armourstands = GetObjects(name);
     }
 
     /**
@@ -89,32 +94,10 @@ public class Blenderstand implements Listener {
     /**
      * This is triggered when an armourstand is hit by the player
      */
-    private void Hit() {
+    public void Hit() {
         if (destroyable) {
             Kill();
         }
-    }
-
-    @EventHandler
-    private void OnHit(EntityDamageByEntityEvent event) {
-        if (event.getEntityType() == EntityType.ARMOR_STAND) {
-            ArmorStand armourstand = (ArmorStand) event.getEntity();
-            if (event.getDamager().getType() == EntityType.PLAYER) {
-                Player player = (((Player) event.getDamager()).getPlayer());
-                if (HasEntity(armourstand)) {
-                    Hit();
-                }
-            }
-        }
-    }
-
-    private boolean HasEntity(ArmorStand armourstand) {
-        for (ArmourstandEntity e : armourstandEntities) {
-            if (armourstand.equals(e.entity)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -135,6 +118,5 @@ public class Blenderstand implements Listener {
      */
     public void Kill() {
         armourstandEntities.forEach(e -> e.entity.remove());
-        BlenderstandManager.GetInstance().Remove(this);
     }
 }
