@@ -18,15 +18,15 @@ import javax.inject.Inject;
 
 public final class Blenderstands extends JavaPlugin {
 
-    private BlenderstandManager blenderstandManager;
+    @Inject private BlenderstandManager blenderstandManager;
     @Inject private Commands commands;
     @Inject private BlenderEgg blenderEgg;
+    @Inject private Injector injector;
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
-        blenderstandManager = new BlenderstandManager();
-        BlenderstandsModule module = new BlenderstandsModule(this, blenderstandManager);
+        // Dependency Injection
+        BlenderstandsModule module = new BlenderstandsModule(this);
         Injector injector = module.createInjector();
         injector.injectMembers(this);
 

@@ -22,34 +22,33 @@ public final class Commands extends BaseCommand {
 
     @Inject private Blenderstands plugin;
     @Inject private BlenderstandManager blenderstandManager;
-    @Inject
-    Injector injector;
+    @Inject private BlenderstandFactory blenderstandFactory;
 
     @Default
     @Subcommand("spawn")
     public void onSpawn(Player player) {
-        Blenderstand bs = new Blenderstand("untitled", blenderstandManager);
+        Blenderstand bs = blenderstandFactory.create("untitled");
         bs.Spawn(player.getLocation());
     }
 
     @Default
     @Subcommand("spawn")
     public void onSpawn(Player player, String name) {
-        Blenderstand bs = new Blenderstand(name, blenderstandManager);
+        Blenderstand bs = blenderstandFactory.create(name);
         bs.Spawn(player.getLocation());
     }
 
     @Default
     @Subcommand("spawnanimation")
     public void onSpawnAnimation(Player player) {
-        Blenderstand bs = new Blenderstand("untitled", blenderstandManager);
+        Blenderstand bs = blenderstandFactory.create("untitled");
         bs.Spawn(player.getLocation());
         bs.RunAnimation();
     }
 
     @Subcommand("spawnat")
     public void onSpawn(Player player, int frame) {
-        Blenderstand bs = new Blenderstand("untitled", blenderstandManager);
+        Blenderstand bs = blenderstandFactory.create("untitled");
         bs.Spawn(player.getLocation());
         bs.SetFrame(frame);
     }

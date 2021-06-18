@@ -1,6 +1,7 @@
 package rdpolarity.blenderstands;
 
 import com.google.inject.Injector;
+import de.tr7zw.nbtapi.NBTItem;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,6 +13,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import rdpolarity.blenderstands.utillities.ItemBuilder;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -19,48 +21,37 @@ import java.util.List;
 
 public class BlenderEgg implements Listener {
 
-    @Inject Blenderstands plugin;
-    @Inject BlenderstandManager blenderstandManager;
     @Inject
-    Injector injector;
+    private Blenderstands plugin;
+    @Inject
+    private BlenderstandManager blenderstandManager;
+    @Inject
+    private BlenderstandFactory blenderstandFactory;
+
+    private static final String EGG_FILE_KEY = "BlenderstandsFile";
 
     public static void Give(Player player, String fileName) {
-        ItemStack egg = new ItemStack(Material.EGG);
-        // Item Meta
-        ItemMeta stickMeta = egg.getItemMeta();
-        stickMeta.setDisplayName(fileName);
-        List<String> lore = new ArrayList<>();
-        lore.add("Blender Egg");
-        lore.add("Spawning from file: " + fileName);
-        stickMeta.setLore(lore);
-        egg.setItemMeta(stickMeta);
+        ItemStack egg = new ItemBuilder(Material.EGG)
+                .name(fileName)
+                .lore("Blender Egg")
+                .lore("Spawning from file: " + fileName)
+                .make();
         // NBT Data
-        net.minecraft.server.v1_16_R3.ItemStack itemNMS = CraftItemStack.asNMSCopy(egg);
-        NBTTagCompound tag = itemNMS.getTag() != null ? itemNMS.getTag() : new NBTTagCompound();
-        tag.setString("BlenderstandsFile", fileName);
-        itemNMS.setTag(tag);
-        egg = CraftItemStack.asCraftMirror(itemNMS);
-        player.getInventory().addItem(egg);
+        NBTItem nbti = new NBTItem(egg);
+        nbti.setString(EGG_FILE_KEY, fileName);
+        player.getInventory().addItem(nbti.getItem());
     }
 
     private boolean isEgg(ItemStack item) {
-        net.minecraft.server.v1_16_R3.ItemStack itemNMS = CraftItemStack.asNMSCopy(item);
-        NBTTagCompound tag = itemNMS.getTag() != null ? itemNMS.getTag() : null;
-        if (tag != null) {
-            return tag.hasKey("BlenderstandsFile");
-        }
-        return false;
+        NBTItem nbti = new NBTItem(item);
+        return nbti.hasKey(EGG_FILE_KEY);
     }
 
     private void Spawn(ItemStack item, Location loc) {
-        net.minecraft.server.v1_16_R3.ItemStack itemNMS = CraftItemStack.asNMSCopy(item);
-        NBTTagCompound tag = itemNMS.getTag() != null ? itemNMS.getTag() : null;
-        if (tag != null) {
-            String file = tag.getString("BlenderstandsFile");
-            loc.add(0.5, 1, 0.5);
-            Blenderstand bs = new Blenderstand(file, blenderstandManager);
-            bs.Spawn(loc);
-        }
+        NBTItem nbti = new NBTItem(item);
+        String file = nbti.getString(EGG_FILE_KEY);
+        Blenderstand bs = blenderstandFactory.create(file);
+        bs.Spawn(loc.add(0.5, 1, 0.5));
     }
 
     @EventHandler

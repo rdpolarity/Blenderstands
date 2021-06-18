@@ -19,9 +19,7 @@ import java.util.Optional;
 @Singleton
 public class BlenderstandManager implements Listener {
     @Inject
-    public BlenderstandManager() {
-        Bukkit.broadcastMessage(this.toString());
-    }
+    public BlenderstandManager() { }
 
     private final ArrayList<Blenderstand> blenderstands = new ArrayList<>();
 
@@ -55,7 +53,6 @@ public class BlenderstandManager implements Listener {
     }
 
     public void Clear() {
-        Bukkit.broadcastMessage("Cleared");
         blenderstands.forEach(Blenderstand::Kill);
         blenderstands.clear();
     }
