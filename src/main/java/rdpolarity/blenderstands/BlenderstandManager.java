@@ -41,6 +41,7 @@ public class BlenderstandManager implements Listener {
                 Player player = (((Player) event.getDamager()).getPlayer());
                 Optional<Blenderstand> blenderstand = FindArmourstandEntity(armourstand);
                 blenderstand.ifPresent(Blenderstand::Hit);
+                blenderstand.ifPresent(this::Remove);
             }
         }
     }

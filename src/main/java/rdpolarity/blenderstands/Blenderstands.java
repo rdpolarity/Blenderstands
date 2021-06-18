@@ -18,14 +18,15 @@ import javax.inject.Inject;
 
 public final class Blenderstands extends JavaPlugin {
 
-    @Inject private BlenderstandManager blenderstandManager;
+    private BlenderstandManager blenderstandManager;
     @Inject private Commands commands;
     @Inject private BlenderEgg blenderEgg;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
-        BlenderstandsModule module = new BlenderstandsModule(this, new BlenderstandManager());
+        blenderstandManager = new BlenderstandManager();
+        BlenderstandsModule module = new BlenderstandsModule(this, blenderstandManager);
         Injector injector = module.createInjector();
         injector.injectMembers(this);
 
@@ -39,5 +40,6 @@ public final class Blenderstands extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic;
+        blenderstandManager.Clear();
     }
 }

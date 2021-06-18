@@ -3,7 +3,6 @@ package rdpolarity.blenderstands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.Dependency;
 import co.aikar.commands.annotation.Subcommand;
 import com.google.inject.Injector;
 import org.bukkit.Bukkit;
@@ -29,32 +28,28 @@ public final class Commands extends BaseCommand {
     @Default
     @Subcommand("spawn")
     public void onSpawn(Player player) {
-        Blenderstand bs = injector.getInstance(Blenderstand.class);
-        bs.FromFile("untitled");
+        Blenderstand bs = new Blenderstand("untitled", blenderstandManager);
         bs.Spawn(player.getLocation());
     }
 
     @Default
     @Subcommand("spawn")
     public void onSpawn(Player player, String name) {
-        Blenderstand bs = injector.getInstance(Blenderstand.class);
-        bs.FromFile(name);
+        Blenderstand bs = new Blenderstand(name, blenderstandManager);
         bs.Spawn(player.getLocation());
     }
 
     @Default
     @Subcommand("spawnanimation")
     public void onSpawnAnimation(Player player) {
-        Blenderstand bs = injector.getInstance(Blenderstand.class);
-        bs.FromFile("untitled");
+        Blenderstand bs = new Blenderstand("untitled", blenderstandManager);
         bs.Spawn(player.getLocation());
         bs.RunAnimation();
     }
 
     @Subcommand("spawnat")
     public void onSpawn(Player player, int frame) {
-        Blenderstand bs = injector.getInstance(Blenderstand.class);
-        bs.FromFile("untitled");
+        Blenderstand bs = new Blenderstand("untitled", blenderstandManager);
         bs.Spawn(player.getLocation());
         bs.SetFrame(frame);
     }
@@ -71,8 +66,7 @@ public final class Commands extends BaseCommand {
 
     @Subcommand("equip")
     public void onEquip(Player player, String file) {
-        Blenderstand bs = injector.getInstance(Blenderstand.class);
-        bs.FromFile(file);
+//        Blenderstand bs = new Blenderstand(file, blenderstandManager);
     }
 
     @Subcommand("test")

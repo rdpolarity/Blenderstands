@@ -23,12 +23,11 @@ import java.util.ArrayList;
 public class Blenderstand {
 
     @Inject Injector injector;
-    @Inject BlenderstandManager blenderstandManager;
 
     public ArmourstandObject[] armourstands; // TODO: Encapsulate
     public ArrayList<ArmourstandEntity> armourstandEntities = new ArrayList<>(); // TODO: Encapsulate
     private int currentFrame = 0;
-    private boolean destroyable = false;
+    private boolean destroyable = true;
 
     public boolean isDestroyable() {
         return destroyable;
@@ -41,12 +40,12 @@ public class Blenderstand {
      * Initialises Blenderstand Object
      */
     @Inject
-    public Blenderstand() {
+    public Blenderstand(String name, BlenderstandManager blenderstandManager) {
+        armourstands = GetObjects(name);
         blenderstandManager.Add(this);
     }
 
     public void FromFile(String name) {
-        armourstands = GetObjects(name);
     }
 
     /**

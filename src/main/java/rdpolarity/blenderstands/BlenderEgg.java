@@ -58,8 +58,7 @@ public class BlenderEgg implements Listener {
         if (tag != null) {
             String file = tag.getString("BlenderstandsFile");
             loc.add(0.5, 1, 0.5);
-            Blenderstand bs = injector.getInstance(Blenderstand.class);
-            bs.FromFile(file);
+            Blenderstand bs = new Blenderstand(file, blenderstandManager);
             bs.Spawn(loc);
         }
     }

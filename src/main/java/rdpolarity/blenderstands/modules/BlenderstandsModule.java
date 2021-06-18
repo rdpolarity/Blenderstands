@@ -25,6 +25,5 @@ public class BlenderstandsModule extends AbstractModule {
     protected void configure() {
         this.bind(Blenderstands.class).toInstance(this.plugin);
         this.bind(BlenderstandManager.class).toInstance(this.manager);
-        this.bind(Blenderstand.class).toInstance(new Blenderstand());
     }
 }
