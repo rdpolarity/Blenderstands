@@ -1,26 +1,28 @@
 package rdpolarity.blenderstands;
 
-import com.google.inject.Injector;
 import de.tr7zw.nbtapi.NBTItem;
-import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import rdpolarity.blenderstands.utillities.ItemBuilder;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BlenderEgg implements Listener {
 
+    private enum EggTypes {
+        BLAZE(Material.BLAZE_SPAWN_EGG),
+        WOLF(Material.WOLF_SPAWN_EGG),
+        CREEPER(Material.CREEPER_SPAWN_EGG),
+        BAT(Material.BAT_SPAWN_EGG);
+        private final Material material;
+        EggTypes(Material material) { this.material = material; }
+    }
     @Inject
     private Blenderstands plugin;
     @Inject
@@ -31,7 +33,8 @@ public class BlenderEgg implements Listener {
     private static final String EGG_FILE_KEY = "BlenderstandsFile";
 
     public static void Give(Player player, String fileName) {
-        ItemStack egg = new ItemBuilder(Material.EGG)
+        Material eggMat = EggTypes.values()[(int) (Math.random() * EggTypes.values().length)].material;
+        ItemStack egg = new ItemBuilder(eggMat)
                 .name(fileName)
                 .lore("Blender Egg")
                 .lore("Spawning from file: " + fileName)
@@ -59,6 +62,7 @@ public class BlenderEgg implements Listener {
         Player player = event.getPlayer();
         if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             ItemStack item = player.getInventory().getItemInMainHand();
+            if (item == null || item.getType() == Material.AIR) return;
             if (isEgg(item)) {
                 Spawn(item, event.getClickedBlock().getLocation());
                 event.setCancelled(true);
