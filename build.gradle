@@ -1,5 +1,5 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'kr.entree.spigradle' version '2.2.3'
     id 'java'
 }
@@ -7,19 +7,13 @@ plugins {
 group = 'rdpolarity'
 version = '1.0'
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
-
 repositories {
     mavenCentral()
-    maven { url = "https://repo.aikar.co/content/groups/aikar/" }
-    maven { url = "https://maven.enginehub.org/repo/" }
-    maven { url = "https://repo.dmulloy2.net/repository/public/" }
-    maven { url = "https://mvnrepository.com/artifact/com.google.inject/assistedinject" }
-    maven {
-        name = 'CodeMC'
-        url = 'https://repo.codemc.org/repository/maven-public/'
-    }
+    maven { url "https://repo.aikar.co/content/groups/aikar/" }
+    maven { url "https://maven.enginehub.org/repo/" }
+    maven { url "https://repo.dmulloy2.net/repository/public/" }
+    maven { url "https://mvnrepository.com/artifact/com.google.inject/assistedinject" }
+    maven { url 'https://repo.codemc.org/repository/maven-public/' }
     mavenLocal()
 }
 
@@ -30,23 +24,41 @@ compileJava {
 }
 
 dependencies {
-    compileOnly spigotAll("1.16.5")
-    compileOnly 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
-    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.5'
-    compile "co.aikar:acf-bukkit:0.5.0-SNAPSHOT"
-    compile "com.comphenix.protocol:ProtocolLib:4.6.0"
-    annotationProcessor 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
+    implementation spigotAll("1.16.5")
+    implementation 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
+    implementation "co.aikar:acf-bukkit:0.5.0-SNAPSHOT"
+    implementation "com.comphenix.protocol:ProtocolLib:4.6.0"
     implementation group: 'com.google.inject', name: 'guice', version: '5.0.1'
     implementation group: 'com.google.inject.extensions', name: 'guice-assistedinject', version: '5.0.1'
-    compile group: 'de.tr7zw', name: 'item-nbt-api-plugin', version: '2.8.0'
+    implementation group: 'de.tr7zw', name: 'item-nbt-api-plugin', version: '2.8.0'
+    implementation 'redis.clients:jedis:3.7.0-SNAPSHOT'
+    annotationProcessor 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
 }
 
 shadowJar {
+    // Relocations
     relocate 'co.aikar.commands', 'rdpolarity.blenderstands.acf'
     relocate 'co.aikar.locales', 'rdpolarity.blenderstands.locales'
     relocate 'com.comphenix.protocol', 'rdpolarity.blenderstands'
     relocate 'de.tr7zw', 'rdpolarity.blenderstands'
+
+    // Export Settings
+    archiveBaseName.set("Blenderstands")
+    archiveClassifier.set('')
+    archiveVersion.set('')
     destinationDirectory.set(file("C:\\Users\\rdpol\\IdeaProjects\\Servers\\servers\\1.16.5\\plugins"))
 }
+
+task finalize {
+    doLast {
+        print('Sending Reload Message...')
+        exec {
+            commandLine 'cmd','/c','redis-cli PUBLISH redis.reload test'
+        }
+        print('SENT!')
+    }
+}
+
+build { finalizedBy(finalize) }
 
 build { dependsOn shadowJar }

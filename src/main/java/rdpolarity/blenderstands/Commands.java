@@ -8,6 +8,7 @@ import com.google.inject.Injector;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.annotation.command.Command;
+import redis.clients.jedis.Jedis;
 
 import javax.inject.Inject;
 
@@ -20,9 +21,12 @@ import javax.inject.Inject;
 )
 public final class Commands extends BaseCommand {
 
-    @Inject private Blenderstands plugin;
-    @Inject private BlenderstandManager blenderstandManager;
-    @Inject private BlenderstandFactory blenderstandFactory;
+    @Inject
+    private Blenderstands plugin;
+    @Inject
+    private BlenderstandManager blenderstandManager;
+    @Inject
+    private BlenderstandFactory blenderstandFactory;
 
     @Default
     @Subcommand("spawn")
@@ -70,6 +74,6 @@ public final class Commands extends BaseCommand {
 
     @Subcommand("test")
     public void onTest(Player player) {
-        Bukkit.broadcastMessage(plugin.toString());
+        player.sendMessage("testing a new response");
     }
 }
